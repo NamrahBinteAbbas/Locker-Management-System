@@ -29,7 +29,7 @@ export default function LockerDetailScreen() {
   const [locker, setLocker] = useState<LockerDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [booking, setBooking] = useState(false);
-  const [putForSharing, setPutForSharing] = useState(false); // ✅ NEW
+  const [putForSharing, setPutForSharing] = useState(false);
 
   useEffect(() => {
     fetchLockerDetails();
@@ -38,19 +38,18 @@ export default function LockerDetailScreen() {
   const fetchLockerDetails = async () => {
     try {
       const token = await AsyncStorage.getItem("token");
-      const response = await fetch(`http://localhost:5001/lockers`, {
+      const response = await fetch(`http://localhost:5001/lockers/${id}`, { // ✅ Fixed: was $[id]
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
       const data = await response.json();
-      const lockerData = data.find((l: any) => l._id === id);
 
-      if (lockerData) {
-        setLocker(lockerData);
+      if (response.ok) {
+        setLocker(data); // ✅ Fixed: backend returns a single object, not an array
       } else {
-        Alert.alert("Error", "Locker not found");
+        Alert.alert("Error", data.message);
       }
     } catch (err) {
       Alert.alert("Error", "Network error");
@@ -71,7 +70,7 @@ export default function LockerDetailScreen() {
         },
         body: JSON.stringify({
           lockerId: id,
-          putForSharing: putForSharing, // ✅ Send the toggle value
+          putForSharing: putForSharing,
         }),
       });
 
@@ -107,7 +106,7 @@ export default function LockerDetailScreen() {
   }
 
   const canBook = !locker.occupied || (locker.availableForSharing && locker.currentOccupants < locker.maxOccupants);
-  const isFirstOccupant = !locker.occupied; // ✅ Check if this is the first booking
+  const isFirstOccupant = !locker.occupied;
 
   return (
     <ScrollView style={styles.container}>
@@ -141,7 +140,6 @@ export default function LockerDetailScreen() {
 
       {canBook && (
         <View style={styles.bookingSection}>
-          {/* ✅ Show toggle only if first occupant */}
           {isFirstOccupant && (
             <View style={styles.sharingToggle}>
               <Text style={styles.toggleLabel}>Make available for sharing?</Text>

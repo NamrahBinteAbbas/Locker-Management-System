@@ -59,10 +59,16 @@ export default function DashboardScreen() {
     }
   };
 
-  const getStatusColor = (status: string) => {
-    if (status === "Available") return "#4CAF50";
-    if (status === "Available for Sharing") return "#FF9800";
-    return "#9E9E9E";
+  const getStatusColor = (status: Locker["status"]) => {
+    switch (status) {
+      case "Available":
+        return "#4CAF50"; // green
+      case "Available for Sharing":
+        return "#FF9800"; // orange
+      case "Occupied":
+      default:
+        return "#9E9E9E"; // grey
+    }
   };
 
   const renderLocker = ({ item }: { item: Locker }) => (

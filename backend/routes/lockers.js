@@ -10,9 +10,14 @@ router.get("/", auth, async (req, res) => {
     const lockers = await db.collection("lockers").find().toArray();
     const lockerData = lockers.map(locker =>{
         let status = "Available";
-        if(locker.occupants.length === 1 && locker.availableForSharing) status = "Available for Sharing";
-        else if(locker.currentOccupants === 1 && !locker.availableForSharing) status = "Occupied";
-        else if(locker.occupied && !locker.availableForSharing) status = "Occupied";
+
+        if (locker.occupied) {
+                if (locker.availableForSharing && locker.currentOccupants < locker.maxOccupants) {
+                    status = "Available for Sharing";
+                } else {
+                    status = "Occupied";
+                }
+            }
         return {
             _id: locker._id,
             number: locker.number,
@@ -31,6 +36,7 @@ router.get("/", auth, async (req, res) => {
 });
 router.put("/:id/share", auth, async (req,res) => {
     try {
+    const db = getDB();
     const lockerId = req.params.id;
     const userId = req.userId;
     const locker = await db.collection("lockers").findOne({_id: new ObjectId(lockerId)});
@@ -58,4 +64,19 @@ router.put("/:id/share", auth, async (req,res) => {
         res.status(500).json({message: "server error"});
     }
 });
+router.get("/:id", auth, async (req,res) =>{
+    try {
+        const db = getDB();
+        const lockerId = req.params.id; 
+        const locker = await db.collection("lockers").findOne({_id: new ObjectId(lockerId)});
+        if(!locker){
+            return res.status(404).json({message: "Locker not found"});
+        }
+        res.json(locker);
+    }
+    catch(err){
+        console.error(err);
+        res.status(500).json({message: "server error"});
+    }
+} );
 module.exports = router;
