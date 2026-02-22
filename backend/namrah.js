@@ -30,7 +30,7 @@ app.get("/dbtest", async (req, res) => {
 });
 
 const signupRoute = require("./routes/signup");
-app.use("/signup", signupRoute);
+app.use("/", signupRoute);
 
 const loginRoute = require("./routes/login");
 app.use("/login", loginRoute);
@@ -40,6 +40,9 @@ app.use("/lockers", lockerRoute);
 
 const bookingRoute = require("./routes/booking");
 app.use("/bookings", bookingRoute);
+
+const myLockersRoute = require("./routes/mylockers");
+app.use("/mylockers", myLockersRoute);
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:5001`);
