@@ -55,6 +55,7 @@ export default function MyLockerScreen() {
       setLoading(false);
     }
   };
+
   const handleRelease = async () => {
     const confirmed = window.confirm("Are you sure you want to release this locker?");
     if (!confirmed) return;
@@ -139,12 +140,14 @@ export default function MyLockerScreen() {
   }
 
   const isSharing = locker.currentOccupants > 1;
-  const canShare =
-    locker.currentOccupants === 1 && !locker.availableForSharing;
+  const canShare = locker.currentOccupants === 1 && !locker.availableForSharing;
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.push("/lockers")} style={styles.backButton}>
+          <Text style={styles.backButtonText}>‹</Text>
+        </TouchableOpacity>
         <Text style={styles.lockerNumber}>{locker.number}</Text>
         <Text style={styles.location}>{locker.location}</Text>
       </View>
@@ -268,6 +271,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#8B1538",
     padding: 30,
     paddingTop: 60,
+  },
+  backButton: {
+    marginBottom: 10,
+  },
+  backButtonText: {
+    fontSize: 40,
+    color: "#fff",
+    lineHeight: 40,
   },
   lockerNumber: {
     fontSize: 36,

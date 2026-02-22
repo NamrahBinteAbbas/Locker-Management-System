@@ -44,8 +44,6 @@ export default function DashboardScreen() {
       });
 
       const data = await response.json();
-      console.log("📥 Received data:", data); // ✅ ADD THIS
-      console.log("📥 First locker status:", data[0]?.status); 
 
       if (response.ok) {
         setLockers(data);
@@ -62,12 +60,12 @@ export default function DashboardScreen() {
   const getStatusColor = (status: Locker["status"]) => {
     switch (status) {
       case "Available":
-        return "#4CAF50"; // green
+        return "#4CAF50";
       case "Available for Sharing":
-        return "#FF9800"; // orange
+        return "#FF9800";
       case "Occupied":
       default:
-        return "#9E9E9E"; // grey
+        return "#9E9E9E";
     }
   };
 
@@ -99,8 +97,18 @@ export default function DashboardScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Locker Dashboard</Text>
-        <Text style={styles.subtitle}>Select a locker to view details</Text>
+        <View style={styles.headerTop}>
+          <View>
+            <Text style={styles.title}>Locker Dashboard</Text>
+            <Text style={styles.subtitle}>Select a locker to view details</Text>
+          </View>
+          <TouchableOpacity
+            style={styles.myLockerButton}
+            onPress={() => router.push("/mylockers")}
+          >
+            <Text style={styles.myLockerButtonText}>My Locker</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <View style={styles.legend}>
@@ -144,6 +152,11 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     backgroundColor: "#8B1538",
   },
+  headerTop: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
   title: {
     fontSize: 24,
     fontWeight: "bold",
@@ -153,6 +166,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#fff",
     marginTop: 5,
+  },
+  myLockerButton: {
+    backgroundColor: "#fff",
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 20,
+  },
+  myLockerButtonText: {
+    color: "#8B1538",
+    fontWeight: "600",
+    fontSize: 13,
   },
   legend: {
     flexDirection: "row",

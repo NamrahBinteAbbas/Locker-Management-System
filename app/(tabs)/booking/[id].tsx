@@ -38,7 +38,7 @@ export default function LockerDetailScreen() {
   const fetchLockerDetails = async () => {
     try {
       const token = await AsyncStorage.getItem("token");
-      const response = await fetch(`http://localhost:5001/lockers/${id}`, { // ✅ Fixed: was $[id]
+      const response = await fetch(`http://localhost:5001/lockers/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -47,7 +47,7 @@ export default function LockerDetailScreen() {
       const data = await response.json();
 
       if (response.ok) {
-        setLocker(data); // ✅ Fixed: backend returns a single object, not an array
+        setLocker(data);
       } else {
         Alert.alert("Error", data.message);
       }
@@ -111,6 +111,9 @@ export default function LockerDetailScreen() {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.push("/lockers")} style={styles.backButton}>
+          <Text style={styles.backButtonText}>‹</Text>
+        </TouchableOpacity>
         <Text style={styles.lockerNumber}>{locker.number}</Text>
         <Text style={styles.location}>{locker.location}</Text>
       </View>
@@ -197,6 +200,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#8B1538",
     padding: 30,
     paddingTop: 60,
+  },
+  backButton: {
+    marginBottom: 10,
+  },
+  backButtonText: {
+    fontSize: 40,
+    color: "#fff",
+    lineHeight: 40,
   },
   lockerNumber: {
     fontSize: 36,
